@@ -23,26 +23,37 @@ class array {
         using ptr = size_t;
 
         array() = default;
-        array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(::operator new[](rhs.capacity)) {
+
+        void destroy(ptr begin, ptr end) {
+            for (size_t i = begin; i < end; i++) {
+                data[i].~T();
+            }
+
+            ::operator delete[](data);
+        }
+
+        array(const array<T>& rhs) = delete;
+
+        array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(static_cast<T*>(::operator new[](rhs.capacity))) {
             for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
             }
         }
-
-        array<T>& operator=(const array<T>& rhs) = delete;
-        array<T>& operator=(array<T>&& rhs) = delete;
 
         array(array<T>&& rhs) noexcept : capacity(rhs.capacity), data(rhs.data) {
             rhs.capacity = 0;
             rhs.data = nullptr;
         }
 
+        array<T>& operator=(const array<T>& rhs) = delete;
+        array<T>& operator=(array<T>&& rhs) = delete;
+
         array<T>& assign(ptr begin, ptr end, const array<T>& rhs, ptr rhs_begin, ptr rhs_end) {
             if (this == &rhs) {
                 return *this;
             }
 
-            T* new_data = ::operator new[](rhs.capacity);
+            T* new_data = static_cast<T*>(::operator new[](rhs.capacity));
             
             for (size_t i = begin; i < end; i++) {
                 data[i].~T();
@@ -77,10 +88,6 @@ class array {
             rhs.data = nullptr;
         }
 
-        void reserve(ptr begin, ptr end, size_t new_capacity, ptr new_begin, ptr new_end) {
-            (void) new_end;
-        }
-
         void reserve(ptr begin, ptr end, ptr new_begin, ptr new_end) {
             if (new_end - new_begin <= capacity) {
                 return;
@@ -88,7 +95,7 @@ class array {
 
             size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
 
-            T* new_data = ::operator new[](new_capacity);
+            T* new_data = static_cast<T*>(::operator new[](new_capacity));
 
             for (size_t i = begin; i < end; i++) {
                 new (&new_data[(i - begin) + new_begin]) T{ std::move(data[i]) };
@@ -100,16 +107,32 @@ class array {
             capacity = new_capacity;
         }
 
-        T& front(ptr begin, ptr end) noexcept {
-            (void) end;
-
-            return data[begin];
+        T& access(ptr p) noexcept {
+            return data[p];
         }
 
-        T& back(ptr begin, ptr end) noexcept {
-            (void) begin;
+        const T& access(ptr p) const noexcept {
+            return data[p];
+        }
 
-            return data[end];
+        ptr begin() const noexcept {
+            return 0;
+        }
+
+        ptr end() const noexcept {
+            return capacity;
+        }
+
+        ptr increment(ptr p) const noexcept {
+            return p + 1;
+        }
+
+        ptr decrement(ptr p) const noexcept {
+            return p - 1;
+        }
+
+        size_t size(ptr begin, ptr end) const noexcept {
+            return end - begin;
         }
 
         // array_forward_iterator<T> begin() noexcept { return data; }

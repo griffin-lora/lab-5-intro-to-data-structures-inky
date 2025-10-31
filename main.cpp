@@ -1,13 +1,8 @@
-#ifdef MAIN
+// #ifdef MAIN
 
-#include "ABDQ.hpp"
-#include "ABQ.hpp"
-#include "ABS.hpp"
-#include "Interfaces.hpp"
-#include "LinkedList.hpp"
-#include "LLDQ.hpp"
-#include "LLQ.hpp"
-#include "LLS.hpp"
+#include "Array.hpp"
+#include "Stack.hpp"
+#include <cstddef>
 #include <iostream>
 
 /*
@@ -19,10 +14,20 @@
 */
 
 int main() {
+    stack<int, array<int>> my_stack;
+    my_stack.push(10);
+    my_stack.push(20);
+    my_stack.push(30);
 
+    std::cout << my_stack.size() << '\n';
+
+    for (size_t i = 0; i < 3; i++) {
+        std::cout << my_stack.peek() << '\n';
+        my_stack.pop();
+    }
 
     return 0;
 }
 
 
-#endif
+// #endif
