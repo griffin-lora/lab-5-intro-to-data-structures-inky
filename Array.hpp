@@ -3,93 +3,73 @@
 #include <cstddef>
 
 template<typename T>
-struct ArrayForwardIterator {
+struct array_forward_iterator {
     using difference_type = std::ptrdiff_t;
     using value_type = T;
 
     T* ptr;
 
-    ArrayForwardIterator(T* ptr) : ptr(ptr) {}
+    array_forward_iterator(T* ptr) : ptr(ptr) {}
     T& operator*() const { return *ptr; }
-    ArrayForwardIterator<T>& operator++() { ptr++; return *this; }
-    bool operator==(const ArrayForwardIterator<T>& rhs) const { return ptr == rhs.ptr; }
+    array_forward_iterator<T>& operator++() { ptr++; return *this; }
+    bool operator==(const array_forward_iterator<T>& rhs) const { return ptr == rhs.ptr; }
 };
 
 template<typename T>
-class Array {
+class array {
     size_t capacity = 0;
-    size_t size = 0;
     T* data = nullptr;
-
-    void reserve(size_t new_capacity) {
-        if (new_capacity <= capacity) {
-            return;
-        }
-
-        T* new_data = ::operator new[](new_capacity);
-
-        for (size_t i = 0; i < size; i++) {
-            new (&new_data[i]) T{ std::move(data[i]) };
-        }
-
-        ::operator delete[](data);
-        
-        data = new_data;
-        capacity = new_capacity;
-    }
     public:
-        Array() = default;
-        ~Array() {
-            for (size_t i = 0; i < size; i++) {
-                data[i].~T();
-            }
+        using ptr = size_t;
 
-            ::operator delete[](data);
-        }
-        Array(const Array<T>& rhs) : capacity(rhs.capacity), size(rhs.size), data(::operator new[](rhs.capacity)) {
-            for (size_t i = 0; i < size; i++) {
-                new (&data[i]) T{ rhs.data[i] };
+        array() = default;
+        array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(::operator new[](rhs.capacity)) {
+            for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
+                new (&data[i]) T{ rhs.data[rhs_begin + i] };
             }
         }
-        Array(Array<T>&& rhs) noexcept : capacity(rhs.capacity), size(rhs.size), data(rhs.data) {
+
+        array<T>& operator=(const array<T>& rhs) = delete;
+        array<T>& operator=(array<T>&& rhs) = delete;
+
+        array(array<T>&& rhs) noexcept : capacity(rhs.capacity), data(rhs.data) {
             rhs.capacity = 0;
-            rhs.size = 0;
             rhs.data = nullptr;
         }
-        Array<T>& operator=(const Array<T>& rhs) {
+
+        array<T>& assign(ptr begin, ptr end, const array<T>& rhs, ptr rhs_begin, ptr rhs_end) {
             if (this == &rhs) {
                 return *this;
             }
 
             T* new_data = ::operator new[](rhs.capacity);
             
-            for (size_t i = 0; i < size; i++) {
+            for (size_t i = begin; i < end; i++) {
                 data[i].~T();
             }
 
             ::operator delete[](data);
 
             capacity = rhs.capacity;
-            size = rhs.size;
             data = new_data;
 
-            for (size_t i = 0; i < size; i++) {
-                new (&data[i]) T{ rhs.data[i] };
+            for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
+                new (&data[i]) T{ rhs.data[rhs_begin + i] };
             }
         }
-        Array<T>& operator=(Array<T>&& rhs) noexcept {
+
+        array<T>& assign(ptr begin, ptr end, array<T>&& rhs) noexcept {
             if (this == &rhs) {
                 return *this;
             }
 
-            for (size_t i = 0; i < size; i++) {
+            for (size_t i = begin; i < end; i++) {
                 data[i].~T();
             }
 
             ::operator delete[](data);
 
             capacity = rhs.capacity;
-            size = rhs.size;
             data = rhs.data;
 
             rhs.capacity = 0;
@@ -97,39 +77,44 @@ class Array {
             rhs.data = nullptr;
         }
 
-        void reserve_back() {
-            size++;
-            if (size > capacity) {
-                reserve(capacity == 0 ? 1 : capacity * 2);
-            }
+        void reserve(ptr begin, ptr end, size_t new_capacity, ptr new_begin, ptr new_end) {
+            (void) new_end;
         }
 
-        void shrink_back() noexcept {
-            size--;
-        }
-
-        T& back() noexcept {
-            return data[size - 1];
-        }
-
-        void resize(size_t new_size) {
-            if (new_size <= size) {
+        void reserve(ptr begin, ptr end, ptr new_begin, ptr new_end) {
+            if (new_end - new_begin <= capacity) {
                 return;
             }
 
-            if (new_size > capacity) {
-                reserve(capacity == 0 ? 1 : capacity * 2);
-                for (size_t i = size; i < new_size; i++) {
-                    new (&data[i]) T{};
-                }
+            size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
+
+            T* new_data = ::operator new[](new_capacity);
+
+            for (size_t i = begin; i < end; i++) {
+                new (&new_data[(i - begin) + new_begin]) T{ std::move(data[i]) };
             }
 
-            size = new_size;
+            ::operator delete[](data);
+            
+            data = new_data;
+            capacity = new_capacity;
         }
 
-        ArrayForwardIterator<T> begin() noexcept { return data; }
-        ArrayForwardIterator<T> end() noexcept { return data + size; }
+        T& front(ptr begin, ptr end) noexcept {
+            (void) end;
 
-        ArrayForwardIterator<const T> begin() const noexcept { return data; }
-        ArrayForwardIterator<const T> end() const noexcept { return data + size; }
+            return data[begin];
+        }
+
+        T& back(ptr begin, ptr end) noexcept {
+            (void) begin;
+
+            return data[end];
+        }
+
+        // array_forward_iterator<T> begin() noexcept { return data; }
+        // array_forward_iterator<T> end() noexcept { return data + size; }
+
+        // array_forward_iterator<const T> begin() const noexcept { return data; }
+        // array_forward_iterator<const T> end() const noexcept { return data + size; }
 };

@@ -3,8 +3,7 @@
 #include <cstddef>
 
 template<typename T, typename B>
-class Stack {
-    size_t size;
+class Queue {
     B b;
     
     public:
@@ -12,16 +11,16 @@ class Stack {
             return b.size();
         }
 
-        void push(const T& elem) {
+        void enqueue(const T& elem) {
             b.reserve_back();
             new (&b.back()) T{ elem };
         }
         
-        T pop() {
-            T elem = std::move(b.back());
-            b.back().~T();
+        T dequeue() {
+            T elem = std::move(b.front());
+            b.front().~T();
 
-            b.shrink_back();
+            b.shrink_front();
 
             return elem;
         }
