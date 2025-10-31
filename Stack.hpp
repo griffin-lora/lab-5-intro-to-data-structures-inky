@@ -50,6 +50,6 @@ class stack {
         }
 
         [[nodiscard]] const T& peek() const noexcept {
-            return b.access(end);
+            return b.access(b.decrement(end));
         }
 };
