@@ -118,24 +118,56 @@ class linked_list {
             return *this;
         }
 
-        ptr reserve_one(ptr begin, ptr end) {
-            (void) begin;
+        ptr grow_increment(ptr begin, ptr end, ptr p) {
+            (void) begin; (void) end;
 
-            if (end == nullptr) {
+            if (head == nullptr) {
                 head = static_cast<node*>(::operator new(sizeof(node)));
                 head->next = nullptr;
 
                 return head;
             }
 
-            if (end->next != nullptr) {
-                return end->next;
+            if (p->next != nullptr) {
+                return increment(p);
             }
 
-            end->next = static_cast<node*>(::operator new(sizeof(node)));
-            end->next->next = nullptr;
+            p->next = static_cast<node*>(::operator new(sizeof(node)));
+            p->next->next = nullptr;
 
-            return end->next;
+            return increment(p);
+        }
+
+        ptr shrink_decrement(ptr begin, ptr end, ptr p) {
+            (void) begin; (void) end;
+
+            return decrement(p);
+        }
+
+        ptr increment(ptr p) noexcept {
+            return p->next;
+        }
+
+        ptr increment(ptr p) const noexcept {
+            return p->next;
+        }
+
+        ptr decrement(ptr p) noexcept {
+            for (node* n = head; n != nullptr; n = n->next) {
+                if (n->next == p) {
+                    return n;
+                }
+            }
+            return nullptr;
+        }
+
+        ptr decrement(ptr p) const noexcept {
+            for (const node* n = head; n != nullptr; n = n->next) {
+                if (n->next == p) {
+                    return n;
+                }
+            }
+            return nullptr;
         }
 
         T& access_begin(ptr p) noexcept {
@@ -174,39 +206,14 @@ class linked_list {
             return n;
         }
 
-        ptr increment(ptr p) noexcept {
-            return p->next;
-        }
-
-        ptr increment(ptr p) const noexcept {
-            return p->next;
-        }
-
-        ptr decrement(ptr p) noexcept {
-            for (node* n = head; n != nullptr; n = n->next) {
-                if (n->next == p) {
-                    return n;
-                }
-            }
-            return nullptr;
-        }
-
-        ptr decrement(ptr p) const noexcept {
-            for (const node* n = head; n != nullptr; n = n->next) {
-                if (n->next == p) {
-                    return n;
-                }
-            }
-            return nullptr;
-        }
-
         size_t size(ptr begin, ptr end) const noexcept {
-            size_t s = 0;
+            if (end == nullptr) {
+                return 0;
+            }
+
+            size_t s = 1;
             for (const node* n = begin; n != end; n = n->next) {
 				s++;
-                if (n->next == end) {
-                    s++;
-                }
 			}
             return s;
         }

@@ -46,7 +46,7 @@ class stack {
         }
 
         void push(const T& elem) {
-            typename B::ptr new_end = b.reserve_one(b.begin(), end);
+            typename B::ptr new_end = b.grow_increment(b.begin(), end, end);
             new (&b.access_end(new_end)) T{ elem };
 
             end = new_end;
@@ -56,7 +56,7 @@ class stack {
             T elem = std::move(b.access_end(end));
             b.access_end(end).~T();
 
-            end = b.decrement(end);
+            end = b.shrink_decrement(b.begin(), end, end);
 
             return elem;
         }

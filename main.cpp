@@ -21,7 +21,7 @@ int main() {
     my_stack.push("World");
     my_stack.push("I am here");
 
-    // stack<std::string, linked_list<std::string>> copy;
+    stack<std::string, linked_list<std::string>> copy = my_stack;
 
     // copy = my_stack;
 

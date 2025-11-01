@@ -91,9 +91,9 @@ class array {
             return *this;
         }
 
-        ptr reserve_one(ptr begin, ptr end) {
-            if (end - begin + 1 <= capacity) {
-                return end + 1;
+        ptr grow_increment(ptr begin, ptr end, ptr p) {
+            if (p - begin + 1 <= capacity) {
+                return increment(p);
             }
 
             size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
@@ -110,7 +110,21 @@ class array {
             capacity = new_capacity;
             data = new_data;
 
-            return end + 1;
+            return increment(p);
+        }
+
+        ptr shrink_decrement(ptr begin, ptr end, ptr p) {
+            (void) begin; (void) end;
+
+            return decrement(p);
+        }
+
+        ptr increment(ptr p) const noexcept {
+            return p + 1;
+        }
+
+        ptr decrement(ptr p) const noexcept {
+            return p - 1;
         }
 
         T& access_begin(ptr p) noexcept {
@@ -135,14 +149,6 @@ class array {
 
         ptr end() const noexcept {
             return capacity;
-        }
-
-        ptr increment(ptr p) const noexcept {
-            return p + 1;
-        }
-
-        ptr decrement(ptr p) const noexcept {
-            return p - 1;
         }
 
         size_t size(ptr begin, ptr end) const noexcept {
