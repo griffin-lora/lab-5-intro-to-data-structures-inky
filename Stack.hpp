@@ -4,18 +4,25 @@
 
 template<typename T, typename B>
 class stack {
-    B::ptr end;
+    using ptr = B::ptr;
+    
+    ptr end;
     B b;
     
     public:
         stack() {
+            b.create();
             end = b.begin();
         }
         ~stack() {
             b.destroy(b.begin(), end);
         }
-        stack(const stack<T, B>& rhs) : end(rhs.end), b(B{ rhs.b, rhs.b.begin(), rhs.end }) {}
-        stack(stack<T, B>&& rhs) noexcept : end(rhs.end), b(std::move(rhs.b)) {
+        stack(const stack<T, B>& rhs) {
+            ptr begin;
+            b.create(begin, end, rhs.b, rhs.b.begin(), rhs.end);
+        }
+        stack(stack<T, B>&& rhs) noexcept : end(rhs.end) {
+            b.create(std::move(rhs.b));
             rhs.end = rhs.b.begin();
         }
 
@@ -24,12 +31,12 @@ class stack {
                 return *this;
             }
 
-            b.assign(b.begin(), end, rhs.b, rhs.b.begin(), rhs.end);
-            end = rhs.end;
+            ptr begin = b.begin();
+            b.assign(begin, end, rhs.b, rhs.b.begin(), rhs.end);
 
             return *this;
         }
-        stack<T, B>& operator=(stack<T, B>&& rhs) {
+        stack<T, B>& operator=(stack<T, B>&& rhs) noexcept {
             if (this == &rhs) {
                 return *this;
             }
@@ -46,7 +53,7 @@ class stack {
         }
 
         void push(const T& elem) {
-            typename B::ptr new_end = b.grow_increment(b.begin(), end, end);
+            ptr new_end = b.grow_increment(b.begin(), end, end);
             new (&b.access_end(new_end)) T{ elem };
 
             end = new_end;

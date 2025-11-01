@@ -16,14 +16,14 @@
 */
 
 int main() {
-    stack<std::string, linked_list<std::string>> my_stack;
+    stack<std::string, array<std::string>> my_stack;
     my_stack.push("Hello");
     my_stack.push("World");
     my_stack.push("I am here");
 
-    stack<std::string, linked_list<std::string>> copy = my_stack;
+    stack<std::string, array<std::string>> copy = my_stack;
 
-    // copy = my_stack;
+    copy = my_stack;
 
     std::cout << my_stack.size() << '\n';
 

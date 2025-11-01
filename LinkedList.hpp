@@ -20,7 +20,7 @@ class linked_list {
 				n->elem.~T();
 			}
 
-            for (node* n = head; n != nullptr;) {
+            for (node* n = head; n;) {
                 node* next = n->next;
 				::operator delete(n);
                 n = next;
@@ -29,23 +29,13 @@ class linked_list {
 
         linked_list(const linked_list<T>& rhs) = delete;
 
-        linked_list(const linked_list<T>& rhs, ptr rhs_begin, ptr rhs_end) {
+        linked_list(ptr& begin, ptr& end, const linked_list<T>& rhs, ptr rhs_begin, ptr rhs_end) {
+            (void) begin;
+            (void) end;
             (void) rhs;
 
-            node* prev = nullptr;
-
             for (node* n = rhs_begin; n != rhs_end; n = n->next) {
-                node* append = static_cast<node*>(::operator new(sizeof(node)));
-                new (&append->elem) T{ n->elem };
-                append->next = nullptr;
-
-                if (n == rhs_begin) {
-                    head = append;
-                } else {
-                    prev->next = append;
-                }
-
-                prev = append;
+                
             }
         }
 
@@ -56,7 +46,7 @@ class linked_list {
         linked_list<T>& operator=(const linked_list<T>& rhs) = delete;
         linked_list<T>& operator=(linked_list<T>&& rhs) = delete;
 
-        linked_list<T>& assign(ptr begin, ptr end, const linked_list<T>& rhs, ptr rhs_begin, ptr rhs_end) {
+        linked_list<T>& assign(ptr& begin, ptr& end, const linked_list<T>& rhs, ptr rhs_begin, ptr rhs_end) {
             if (this == &rhs) {
                 return *this;
             }
@@ -81,7 +71,7 @@ class linked_list {
 				n->elem.~T();
 			}
 
-            for (node* n = head; n != nullptr;) {
+            for (node* n = head; n;) {
                 node* next = n->next;
 				::operator delete(n);
                 n = next;
@@ -107,7 +97,7 @@ class linked_list {
 				n->elem.~T();
 			}
 
-            for (node* n = head; n != nullptr; n = n->next) {
+            for (node* n = head; n; n = n->next) {
 				::operator delete(n);
 			}
             
@@ -121,14 +111,14 @@ class linked_list {
         ptr grow_increment(ptr begin, ptr end, ptr p) {
             (void) begin; (void) end;
 
-            if (head == nullptr) {
+            if (!head) {
                 head = static_cast<node*>(::operator new(sizeof(node)));
                 head->next = nullptr;
 
                 return head;
             }
 
-            if (p->next != nullptr) {
+            if (p->next) {
                 return increment(p);
             }
 
@@ -153,7 +143,7 @@ class linked_list {
         }
 
         ptr decrement(ptr p) noexcept {
-            for (node* n = head; n != nullptr; n = n->next) {
+            for (node* n = head; n; n = n->next) {
                 if (n->next == p) {
                     return n;
                 }
@@ -162,7 +152,7 @@ class linked_list {
         }
 
         ptr decrement(ptr p) const noexcept {
-            for (const node* n = head; n != nullptr; n = n->next) {
+            for (const node* n = head; n; n = n->next) {
                 if (n->next == p) {
                     return n;
                 }
@@ -196,18 +186,18 @@ class linked_list {
 
         ptr end() noexcept {
             node* n = head;
-            for (; n != nullptr; n = n->next);
+            for (; n; n = n->next);
             return n;
         }
 
         ptr end() const noexcept {
             const node* n = head;
-            for (; n != nullptr; n = n->next);
+            for (; n; n = n->next);
             return n;
         }
 
         size_t size(ptr begin, ptr end) const noexcept {
-            if (end == nullptr) {
+            if (!end) {
                 return 0;
             }
 
