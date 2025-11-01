@@ -20,13 +20,17 @@ int main() {
     my_stack.push("World");
     my_stack.push("I am here");
 
-    std::cout << my_stack.size() << '\n';
+    stack<std::string, array<std::string>> copy = my_stack;
 
-    size_t s = my_stack.size();
+    copy = std::move(my_stack);
+
+    std::cout << copy.size() << '\n';
+
+    size_t s = copy.size();
 
     for (size_t i = 0; i < s; i++) {
-        std::cout << my_stack.peek() << '\n';
-        my_stack.pop();
+        std::cout << copy.peek() << '\n';
+        copy.pop();
     }
 
     return 0;

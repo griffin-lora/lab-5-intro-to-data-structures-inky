@@ -69,6 +69,8 @@ class array {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
                 rhs.data[rhs_begin + i].~T();
             }
+
+            return *this;
         }
 
         array<T>& assign(ptr begin, ptr end, array<T>&& rhs) noexcept {
@@ -86,8 +88,9 @@ class array {
             data = rhs.data;
 
             rhs.capacity = 0;
-            rhs.size = 0;
             rhs.data = nullptr;
+
+            return *this;
         }
 
         void reserve(ptr begin, ptr end, ptr new_begin, ptr new_end) {

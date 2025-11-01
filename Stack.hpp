@@ -24,7 +24,7 @@ class stack {
                 return *this;
             }
 
-            b.assign(b.begin(), end, rhs, rhs.b.begin(), rhs.end);
+            b.assign(b.begin(), end, rhs.b, rhs.b.begin(), rhs.end);
             end = rhs.end;
 
             return *this;
@@ -34,7 +34,7 @@ class stack {
                 return *this;
             }
 
-            b.assign(b.begin(), end, std::move(rhs));
+            b.assign(b.begin(), end, std::move(rhs.b));
             end = rhs.end;
             rhs.end = rhs.b.begin();
 
