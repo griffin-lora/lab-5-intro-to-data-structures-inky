@@ -16,12 +16,14 @@
 */
 
 int main() {
-    stack<std::string, array<std::string>> my_stack;
-    my_stack.push("Hello");
-    my_stack.push("World");
-    my_stack.push("I am here");
+    stack<std::string, linked_list<std::string>> my_stack;
+    my_stack.push("Hellowwwwwwwwwwwwwww");
+    my_stack.push("Worldwwwwwwwwwwwwwww");
+    my_stack.push("I am herewwwwwwwwwww");
 
-    stack<std::string, array<std::string>> copy = my_stack;
+    stack<std::string, linked_list<std::string>> copy = my_stack;
+
+    my_stack.push("test");
 
     copy = my_stack;
 
@@ -31,6 +33,7 @@ int main() {
 
     for (size_t i = 0; i < s; i++) {
         std::cout << my_stack.peek() << '\n';
+        // std::cout << copy.peek() << '\n';
         my_stack.pop();
     }
 

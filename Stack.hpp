@@ -10,7 +10,7 @@ class stack {
     B b;
     
     public:
-        stack() {
+        stack() noexcept {
             b.create();
             end = b.begin();
         }

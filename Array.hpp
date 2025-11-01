@@ -28,7 +28,7 @@ class array {
         array<T>& operator=(const array<T>& rhs) = delete;
         array<T>& operator=(array<T>&& rhs) = delete;
 
-        void create() {
+        void create() noexcept {
             capacity = 0;
             data = nullptr;
         }
