@@ -20,8 +20,10 @@ class linked_list {
 				n->elem.~T();
 			}
 
-            for (node* n = head; n != nullptr; n = n->next) {
+            for (node* n = head; n != nullptr;) {
+                node* next = n->next;
 				::operator delete(n);
+                n = next;
 			}
         }
 
@@ -33,8 +35,9 @@ class linked_list {
             node* prev = nullptr;
 
             for (node* n = rhs_begin; n != rhs_end; n = n->next) {
-                node* append = ::operator new(sizeof(node));
+                node* append = static_cast<node*>(::operator new(sizeof(node)));
                 new (&append->elem) T{ n->elem };
+                append->next = nullptr;
 
                 if (n == rhs_begin) {
                     head = append;
@@ -62,7 +65,8 @@ class linked_list {
             node* prev = nullptr;
 
             for (node* n = rhs_begin; n != rhs_end; n = n->next) {
-                node* append = ::operator new(sizeof(node));
+                node* append = static_cast<node*>(::operator new(sizeof(node)));
+                append->next = nullptr;
 
                 if (n == rhs_begin) {
                     new_head = append;
@@ -77,8 +81,10 @@ class linked_list {
 				n->elem.~T();
 			}
 
-            for (node* n = head; n != nullptr; n = n->next) {
+            for (node* n = head; n != nullptr;) {
+                node* next = n->next;
 				::operator delete(n);
+                n = next;
 			}
 
             head = new_head;
@@ -112,24 +118,15 @@ class linked_list {
             return *this;
         }
 
-        void reserve(ptr begin, ptr end, ptr new_begin, ptr new_end) {
-            if (new_end - new_begin <= capacity) {
+        void reserve_one(ptr begin, ptr end) {
+            (void) begin;
+
+            if (end->next != nullptr) {
                 return;
             }
 
-            size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
-
-            T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
-
-            for (size_t i = begin; i < end; i++) {
-                new (&new_data[(i - begin) + new_begin]) T{ std::move(data[i]) };
-                data[i].~T();
-            }
-
-            ::operator delete[](data);
-            
-            capacity = new_capacity;
-            data = new_data;
+            end->next = static_cast<node*>(::operator new(sizeof(node)));
+            end->next->next = nullptr;
         }
 
         T& access_begin(ptr p) noexcept {
@@ -148,25 +145,46 @@ class linked_list {
             return p->elem;
         }
 
+        ptr begin() noexcept {
+            return head;
+        }
+
         ptr begin() const noexcept {
             return head;
         }
 
-        ptr end() const noexcept {
-            const node* n = head;
-            for (; n != nullptr; n = n->next) {
-
-            }
+        ptr end() noexcept {
+            node* n = head;
+            for (; n != nullptr; n = n->next);
             return n;
         }
 
+        ptr end() const noexcept {
+            const node* n = head;
+            for (; n != nullptr; n = n->next);
+            return n;
+        }
+
+        ptr increment(ptr p) noexcept {
+            return p->next;
+        }
+
         ptr increment(ptr p) const noexcept {
-            return &p->next;
+            return p->next;
+        }
+
+        ptr decrement(ptr p) noexcept {
+            for (node* n = head; n != nullptr; n = n->next) {
+                if (n->next == p) {
+                    return n;
+                }
+            }
+            return nullptr;
         }
 
         ptr decrement(ptr p) const noexcept {
             for (const node* n = head; n != nullptr; n = n->next) {
-                if (&n->next == p) {
+                if (n->next == p) {
                     return n;
                 }
             }
@@ -175,7 +193,7 @@ class linked_list {
 
         size_t size(ptr begin, ptr end) const noexcept {
             size_t s = 0;
-            for (node* n = begin; n != end; n = n->next) {
+            for (const node* n = begin; n != end; n = n->next) {
 				s++;
 			}
             return s;

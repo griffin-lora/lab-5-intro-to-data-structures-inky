@@ -91,8 +91,8 @@ class array {
             return *this;
         }
 
-        void reserve(ptr begin, ptr end, ptr new_begin, ptr new_end) {
-            if (new_end - new_begin <= capacity) {
+        void reserve_one(ptr begin, ptr end) {
+            if (end - begin + 1 <= capacity) {
                 return;
             }
 
@@ -101,7 +101,7 @@ class array {
             T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
 
             for (size_t i = begin; i < end; i++) {
-                new (&new_data[(i - begin) + new_begin]) T{ std::move(data[i]) };
+                new (&new_data[i]) T{ std::move(data[i]) };
                 data[i].~T();
             }
 
