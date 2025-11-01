@@ -1,6 +1,7 @@
 // #ifdef MAIN
 
 #include "Array.hpp"
+#include "LinkedList.hpp"
 #include "Stack.hpp"
 #include <cstddef>
 #include <iostream>
@@ -15,22 +16,22 @@
 */
 
 int main() {
-    stack<std::string, array<std::string>> my_stack;
+    stack<std::string, linked_list<std::string>> my_stack;
     my_stack.push("Hello");
     my_stack.push("World");
     my_stack.push("I am here");
 
-    stack<std::string, array<std::string>> copy = my_stack;
+    stack<std::string, linked_list<std::string>> copy;
 
-    copy = std::move(my_stack);
+    copy = my_stack;
 
-    std::cout << copy.size() << '\n';
+    std::cout << my_stack.size() << '\n';
 
-    size_t s = copy.size();
+    size_t s = my_stack.size();
 
     for (size_t i = 0; i < s; i++) {
-        std::cout << copy.peek() << '\n';
-        copy.pop();
+        std::cout << my_stack.peek() << '\n';
+        my_stack.pop();
     }
 
     return 0;

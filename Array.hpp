@@ -37,7 +37,6 @@ class array {
         array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(static_cast<T*>(::operator new[](sizeof(T) * rhs.capacity))) {
             for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
-                rhs.data[rhs_begin + i].~T();
             }
         }
 
@@ -67,7 +66,6 @@ class array {
 
             for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
-                rhs.data[rhs_begin + i].~T();
             }
 
             return *this;
