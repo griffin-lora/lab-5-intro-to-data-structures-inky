@@ -34,9 +34,10 @@ class array {
 
         array(const array<T>& rhs) = delete;
 
-        array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(static_cast<T*>(::operator new[](rhs.capacity))) {
+        array(const array<T>& rhs, ptr rhs_begin, ptr rhs_end) : capacity(rhs.capacity), data(static_cast<T*>(::operator new[](sizeof(T) * rhs.capacity))) {
             for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
+                rhs.data[rhs_begin + i].~T();
             }
         }
 
@@ -53,7 +54,7 @@ class array {
                 return *this;
             }
 
-            T* new_data = static_cast<T*>(::operator new[](rhs.capacity));
+            T* new_data = static_cast<T*>(::operator new[](sizeof(T) * rhs.capacity));
             
             for (size_t i = begin; i < end; i++) {
                 data[i].~T();
@@ -66,6 +67,7 @@ class array {
 
             for (size_t i = 0; i < rhs_end - rhs_begin; i++) {
                 new (&data[i]) T{ rhs.data[rhs_begin + i] };
+                rhs.data[rhs_begin + i].~T();
             }
         }
 
@@ -95,24 +97,33 @@ class array {
 
             size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
 
-            T* new_data = static_cast<T*>(::operator new[](new_capacity));
+            T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
 
             for (size_t i = begin; i < end; i++) {
                 new (&new_data[(i - begin) + new_begin]) T{ std::move(data[i]) };
+                data[i].~T();
             }
 
             ::operator delete[](data);
             
-            data = new_data;
             capacity = new_capacity;
+            data = new_data;
         }
 
-        T& access(ptr p) noexcept {
+        T& access_begin(ptr p) noexcept {
             return data[p];
         }
 
-        const T& access(ptr p) const noexcept {
+        const T& access_begin(ptr p) const noexcept {
             return data[p];
+        }
+
+        T& access_end(ptr p) noexcept {
+            return data[p - 1];
+        }
+
+        const T& access_end(ptr p) const noexcept {
+            return data[p - 1];
         }
 
         ptr begin() const noexcept {

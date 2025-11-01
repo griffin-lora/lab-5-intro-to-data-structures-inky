@@ -14,19 +14,31 @@ class stack {
         ~stack() {
             b.destroy(b.begin(), end);
         }
-        stack(const stack<T, B>& rhs) : end(rhs.end), b{rhs.b, rhs.b.begin(), rhs.end} {}
-        stack(stack<T, B>&& rhs) noexcept : end(rhs.end), b{std::move(rhs.b)} {
+        stack(const stack<T, B>& rhs) : end(rhs.end), b(B{ rhs.b, rhs.b.begin(), rhs.end }) {}
+        stack(stack<T, B>&& rhs) noexcept : end(rhs.end), b(std::move(rhs.b)) {
             rhs.end = rhs.b.begin();
         }
 
         stack<T, B>& operator=(const stack<T, B>& rhs) {
+            if (this == &rhs) {
+                return *this;
+            }
+
+            b.assign(b.begin(), end, rhs, rhs.b.begin(), rhs.end);
             end = rhs.end;
-            b = B{rhs.b, rhs.b.begin(), rhs.end};
+
+            return *this;
         }
         stack<T, B>& operator=(stack<T, B>&& rhs) {
+            if (this == &rhs) {
+                return *this;
+            }
+
+            b.assign(b.begin(), end, std::move(rhs));
             end = rhs.end;
-            b = std::move(rhs.b);
             rhs.end = rhs.b.begin();
+
+            return *this;
         }
 
         [[nodiscard]] size_t size() const noexcept {
@@ -37,19 +49,21 @@ class stack {
             typename B::ptr new_end = b.increment(end);
 
             b.reserve(b.begin(), end, b.begin(), new_end);
-            new (&b.access(end)) T{ elem };
+            new (&b.access_end(new_end)) T{ elem };
 
             end = new_end;
         }
         
         T pop() {
-            T elem = std::move(b.access(end));
-            b.access(end--).~T();
+            T elem = std::move(b.access_end(end));
+            b.access_end(end).~T();
+
+            end = b.decrement(end);
 
             return elem;
         }
 
         [[nodiscard]] const T& peek() const noexcept {
-            return b.access(b.decrement(end));
+            return b.access_end(end);
         }
 };

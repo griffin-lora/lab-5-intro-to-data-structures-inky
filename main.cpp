@@ -4,6 +4,7 @@
 #include "Stack.hpp"
 #include <cstddef>
 #include <iostream>
+#include <string>
 
 /*
     - LEAVE THE IFDEF GUARDS TO KEEP YOUR MAIN WITHOUT CONFLICTING WITH GRADESCOPE!
@@ -14,14 +15,16 @@
 */
 
 int main() {
-    stack<int, array<int>> my_stack;
-    my_stack.push(10);
-    my_stack.push(20);
-    my_stack.push(30);
+    stack<std::string, array<std::string>> my_stack;
+    my_stack.push("Hello");
+    my_stack.push("World");
+    my_stack.push("I am here");
 
     std::cout << my_stack.size() << '\n';
 
-    for (size_t i = 0; i < 3; i++) {
+    size_t s = my_stack.size();
+
+    for (size_t i = 0; i < s; i++) {
         std::cout << my_stack.peek() << '\n';
         my_stack.pop();
     }
