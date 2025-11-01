@@ -118,15 +118,24 @@ class linked_list {
             return *this;
         }
 
-        void reserve_one(ptr begin, ptr end) {
+        ptr reserve_one(ptr begin, ptr end) {
             (void) begin;
 
+            if (end == nullptr) {
+                head = static_cast<node*>(::operator new(sizeof(node)));
+                head->next = nullptr;
+
+                return head;
+            }
+
             if (end->next != nullptr) {
-                return;
+                return end->next;
             }
 
             end->next = static_cast<node*>(::operator new(sizeof(node)));
             end->next->next = nullptr;
+
+            return end->next;
         }
 
         T& access_begin(ptr p) noexcept {
@@ -195,6 +204,9 @@ class linked_list {
             size_t s = 0;
             for (const node* n = begin; n != end; n = n->next) {
 				s++;
+                if (n->next == end) {
+                    s++;
+                }
 			}
             return s;
         }

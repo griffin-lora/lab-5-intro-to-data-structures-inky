@@ -91,9 +91,9 @@ class array {
             return *this;
         }
 
-        void reserve_one(ptr begin, ptr end) {
+        ptr reserve_one(ptr begin, ptr end) {
             if (end - begin + 1 <= capacity) {
-                return;
+                return end + 1;
             }
 
             size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
@@ -109,6 +109,8 @@ class array {
             
             capacity = new_capacity;
             data = new_data;
+
+            return end + 1;
         }
 
         T& access_begin(ptr p) noexcept {

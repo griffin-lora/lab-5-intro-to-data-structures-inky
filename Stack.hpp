@@ -46,9 +46,7 @@ class stack {
         }
 
         void push(const T& elem) {
-            typename B::ptr new_end = b.increment(end);
-
-            b.reserve_one(b.begin(), end);
+            typename B::ptr new_end = b.reserve_one(b.begin(), end);
             new (&b.access_end(new_end)) T{ elem };
 
             end = new_end;
