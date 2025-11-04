@@ -1,14 +1,8 @@
-#ifdef MAIN
+// #ifdef MAIN
 
-#include "ABDQ.hpp"
-#include "ABQ.hpp"
 #include "ABS.hpp"
-#include "Interfaces.hpp"
-#include "LinkedList.hpp"
-#include "LLDQ.hpp"
-#include "LLQ.hpp"
-#include "LLS.hpp"
 #include <iostream>
+#include <string>
 
 /*
     - LEAVE THE IFDEF GUARDS TO KEEP YOUR MAIN WITHOUT CONFLICTING WITH GRADESCOPE!
@@ -19,10 +13,18 @@
 */
 
 int main() {
+    ABS<std::string> my_stack;
+    my_stack.push("Hellooooooooooooooooo");
+    my_stack.push("Woooooooooooooooooooorld");
+    my_stack.push("This is a testing message no sso");
 
+    for (size_t i = 0; i < my_stack.getSize(); i++) {
+        std::cout << my_stack.peek() << '\n';
+        my_stack.pop();
+    }
 
     return 0;
 }
 
 
-#endif
+// #endif
