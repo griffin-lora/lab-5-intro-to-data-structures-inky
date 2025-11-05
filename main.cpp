@@ -18,7 +18,15 @@ int main() {
     my_stack.push("Woooooooooooooooooooorld");
     my_stack.push("This is a testing message no sso");
 
-    for (size_t i = 0; i < my_stack.getSize(); i++) {
+    ABS<std::string> s3 = my_stack;
+    my_stack = s3;
+
+    ABS<std::string> s2 = std::move(my_stack);
+    my_stack = std::move(s2);
+    
+    size_t n = my_stack.getSize();
+
+    for (size_t i = 0; i < n; i++) {
         std::cout << my_stack.peek() << '\n';
         my_stack.pop();
     }

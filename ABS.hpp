@@ -110,7 +110,7 @@ class ABS {
                 throw std::out_of_range("Cannot peek an empty stack");
             }
             
-            return m_data[m_size];
+            return m_data[m_size - 1];
         }
 
         T pop() {
@@ -118,8 +118,8 @@ class ABS {
                 throw std::out_of_range("Cannot pop an empty stack");
             }
 
-            T elem = std::move(m_data[m_size]);
-            m_data[m_size].~T();
+            T elem = std::move(m_data[m_size - 1]);
+            m_data[m_size - 1].~T();
             m_size--;
 
             return elem;
