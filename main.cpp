@@ -1,5 +1,6 @@
 // #ifdef MAIN
 
+#include "ABDQ.hpp"
 #include "ABS.hpp"
 #include "ABQ.hpp"
 #include <iostream>
@@ -14,22 +15,22 @@
 */
 
 int main() {
-    ABQ<std::string> my_stack;
-    my_stack.enqueue("Hellooooooooooooooooo");
-    my_stack.enqueue("Woooooooooooooooooooorld");
-    my_stack.enqueue("This is a testing message no sso");
+    ABDQ<std::string> my_deque;
+    my_deque.pushFront("Hellooooooooooooooooo");
+    my_deque.pushFront("Woooooooooooooooooooorld");
+    my_deque.pushFront("This is a testing message no sso");
 
-    ABQ<std::string> s3 = my_stack;
-    my_stack = s3;
+    ABDQ<std::string> s3 = my_deque;
+    my_deque = s3;
 
-    ABQ<std::string> s2 = std::move(my_stack);
-    my_stack = std::move(s2);
+    ABDQ<std::string> s2 = std::move(my_deque);
+    my_deque = std::move(s2);
     
-    size_t n = my_stack.getSize();
+    size_t n = my_deque.getSize();
 
     for (size_t i = 0; i < n; i++) {
-        std::cout << my_stack.peek() << '\n';
-        my_stack.dequeue();
+        std::cout << my_deque.back() << '\n';
+        my_deque.popBack();
     }
 
     return 0;
