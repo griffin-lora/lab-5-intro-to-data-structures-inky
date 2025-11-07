@@ -118,7 +118,7 @@ class LinkedList {
             m_head = node;
         }
 
-        void AddHead(const T& elem) {
+        void addHead(const T& elem) {
             pushFront(elem);
         }
 
@@ -138,7 +138,7 @@ class LinkedList {
             m_tail = node;
         }
 
-        void AddTail(const T& elem) {
+        void addTail(const T& elem) {
             pushBack(elem);
         }
 
@@ -221,13 +221,13 @@ class LinkedList {
             m_tail = nullptr;
         }
 
-        void PrintForward() {
+        void printForward() {
             for (Node* node = m_head; node; node = node->next) {
                 std::cout << node << '\n';
             }
         }
 
-        void PrintReverse() {
+        void printReverse() {
             for (Node* node = m_tail; node; node = node->prev) {
                 std::cout << node << '\n';
             }
