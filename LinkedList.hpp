@@ -162,6 +162,15 @@ class LinkedList {
             return elem;
         }
 
+        bool removeHead() {
+            if (!m_head) {
+                return false;
+            }
+
+            popFront();
+            return true;
+        }
+
         T popBack() {
             if (!m_head) {
                 throw std::runtime_error("Cannot dequeue an empty queue");
@@ -180,6 +189,15 @@ class LinkedList {
             }
             
             return elem;
+        }
+
+        bool removeTail() {
+            if (!m_head) {
+                return false;
+            }
+
+            popBack();
+            return true;
         }
 
         // Access
