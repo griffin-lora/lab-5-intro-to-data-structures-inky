@@ -131,7 +131,7 @@ class LinkedList {
 
         T popFront() {
             if (!m_head) {
-                throw std::out_of_range("Cannot dequeue an empty queue");
+                throw std::runtime_error("Cannot dequeue an empty queue");
             }
 
             T elem = std::move(m_head->elem);
@@ -151,7 +151,7 @@ class LinkedList {
 
         T popBack() {
             if (!m_head) {
-                throw std::out_of_range("Cannot dequeue an empty queue");
+                throw std::runtime_error("Cannot dequeue an empty queue");
             }
 
             T elem = std::move(m_tail->elem);
@@ -172,7 +172,7 @@ class LinkedList {
         // Access
         [[nodiscard]] const T& front() const {
             if (!m_head) {
-                throw std::out_of_range("Cannot peek an empty queue");
+                throw std::runtime_error("Cannot peek an empty queue");
             }
             
             return m_head->elem;
@@ -180,7 +180,7 @@ class LinkedList {
 
         [[nodiscard]] const T& back() const {
             if (!m_head) {
-                throw std::out_of_range("Cannot peek an empty stack");
+                throw std::runtime_error("Cannot peek an empty stack");
             }
             
             return m_tail->elem;

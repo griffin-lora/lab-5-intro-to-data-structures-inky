@@ -129,7 +129,7 @@ class Array {
 
         T popFront() {
             if (m_size == 0) {
-                throw std::out_of_range("Cannot dequeue an empty queue");
+                throw std::runtime_error("Cannot dequeue an empty queue");
             }
 
             T elem = std::move(m_data[0]);
@@ -148,7 +148,7 @@ class Array {
 
         T popBack() {
             if (m_size == 0) {
-                throw std::out_of_range("Cannot pop an empty stack");
+                throw std::runtime_error("Cannot pop an empty stack");
             }
 
             T elem = std::move(m_data[m_size - 1]);
@@ -161,7 +161,7 @@ class Array {
         // Access
         [[nodiscard]] const T& front() const {
             if (m_size == 0) {
-                throw std::out_of_range("Cannot peek an empty queue");
+                throw std::runtime_error("Cannot peek an empty queue");
             }
             
             return m_data[0];
@@ -169,7 +169,7 @@ class Array {
 
         [[nodiscard]] const T& back() const {
             if (m_size == 0) {
-                throw std::out_of_range("Cannot peek an empty stack");
+                throw std::runtime_error("Cannot peek an empty stack");
             }
             
             return m_data[m_size - 1];
