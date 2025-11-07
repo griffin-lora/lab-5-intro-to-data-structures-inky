@@ -1,4 +1,4 @@
-#ifdef MAIN
+// #ifdef MAIN
 
 #include "ABDQ.hpp"
 #include "ABS.hpp"
@@ -16,15 +16,18 @@
 */
 
 int main() {
-    LLDQ<std::string> my_deque;
+    ABDQ<std::string> my_deque;
     my_deque.pushFront("Hellooooooooooooooooo");
     my_deque.pushFront("Woooooooooooooooooooorld");
     my_deque.pushFront("This is a testing message no sso");
+    my_deque.pushFront("This is a testing message no sso");
+    my_deque.pushFront("This is a testing message no sso");
+    my_deque.pushFront("This is a testing message no sso");
 
-    LLDQ<std::string> s3 = my_deque;
+    ABDQ<std::string> s3 = my_deque;
     my_deque = s3;
 
-    LLDQ<std::string> s2 = std::move(my_deque);
+    ABDQ<std::string> s2 = std::move(my_deque);
     my_deque = std::move(s2);
     
     size_t n = my_deque.getSize();
@@ -32,10 +35,11 @@ int main() {
     for (size_t i = 0; i < n; i++) {
         std::cout << my_deque.back() << '\n';
         my_deque.popBack();
+        std::cout << my_deque.getMaxCapacity() << '\n';
     }
 
     return 0;
 }
 
 
-#endif
+// #endif

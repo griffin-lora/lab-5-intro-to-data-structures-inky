@@ -9,9 +9,7 @@ class Array {
     size_t m_size = 0;
     T* m_data = nullptr;
 
-    void shrink() {
-        size_t new_capacity = m_capacity / 2;
-
+    void set_capacity(size_t new_capacity) {
         T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
         for (size_t i = 0; i < m_size; i++) {
             new (&new_data[i]) T{ std::move(m_data[i]) };
@@ -25,18 +23,11 @@ class Array {
     }
 
     void reserve() {
-        size_t new_capacity = m_capacity * 2;
+        set_capacity(m_capacity * 2);
+    }
 
-        T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
-        for (size_t i = 0; i < m_size; i++) {
-            new (&new_data[i]) T{ std::move(m_data[i]) };
-            m_data[i].~T();
-        }
-
-        ::operator delete[](m_data);
-
-        m_capacity = new_capacity;
-        m_data = new_data;
+    void shrink() {
+        set_capacity(m_capacity == 1 ? 1 : m_capacity / 2);
     }
 
     public:
