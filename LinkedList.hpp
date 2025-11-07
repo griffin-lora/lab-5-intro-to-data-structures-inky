@@ -19,9 +19,7 @@ class LinkedList {
         Node* prev = nullptr;
 
         for (Node* node = rhs.m_head; node; node = node->next) {
-            Node* append = new Node{
-                .elem = T{ node->data }
-            };
+            Node* append = new Node{ T{ node->data } };
 
             if (!prev) {
                 head = append;
@@ -103,9 +101,7 @@ class LinkedList {
         }
 
         void pushFront(const T& elem) {
-            Node* node = new Node{
-                .elem = elem
-            };
+            Node* node = new Node{ T{ elem } };
 
             if (!m_head) {
                 m_head = node;
@@ -123,9 +119,7 @@ class LinkedList {
         }
 
         void pushBack(const T& elem) {
-            Node* node = new Node{
-                .elem = elem
-            };
+            Node* node = new Node{ T{ elem } };
 
             if (!m_head) {
                 m_head = node;
