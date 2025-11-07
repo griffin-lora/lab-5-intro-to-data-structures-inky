@@ -5,12 +5,27 @@
 
 template<typename T>
 class Array {
-    size_t m_capacity = 0;
+    size_t m_capacity = 1;
     size_t m_size = 0;
     T* m_data = nullptr;
 
+    void shrink() {
+        size_t new_capacity = m_capacity / 2;
+
+        T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
+        for (size_t i = 0; i < m_size; i++) {
+            new (&new_data[i]) T{ std::move(m_data[i]) };
+            m_data[i].~T();
+        }
+
+        ::operator delete[](m_data);
+
+        m_capacity = new_capacity;
+        m_data = new_data;
+    }
+
     void reserve() {
-        size_t new_capacity = m_capacity == 0 ? 1 : m_capacity * 2;
+        size_t new_capacity = m_capacity * 2;
 
         T* new_data = static_cast<T*>(::operator new[](sizeof(T) * new_capacity));
         for (size_t i = 0; i < m_size; i++) {
@@ -25,7 +40,7 @@ class Array {
     }
 
     public:
-        Array() = default;
+        Array() : m_data(static_cast<T*>(::operator new[](sizeof(T)))) {}
         explicit Array(const size_t capacity) : m_capacity(capacity), m_data(static_cast<T*>(::operator new[](sizeof(T) * capacity))) {}
         Array(const Array& rhs) : m_capacity(rhs.m_capacity), m_size(rhs.m_size), m_data(static_cast<T*>(::operator new[](sizeof(T) * rhs.m_capacity))) {
             for (size_t i = 0; i < rhs.m_size; i++) {
@@ -55,7 +70,7 @@ class Array {
             return *this;
         }
         Array(Array&& rhs) noexcept : m_capacity(rhs.m_capacity), m_size(rhs.m_size), m_data(rhs.m_data) {
-            rhs.m_capacity = 0;
+            rhs.m_capacity = 1;
             rhs.m_size = 0;
             rhs.m_data = nullptr;
         }
@@ -74,7 +89,7 @@ class Array {
             m_size = rhs.m_size;
             m_data = rhs.m_data;
 
-            rhs.m_capacity = 0;
+            rhs.m_capacity = 1;
             rhs.m_size = 0;
             rhs.m_data = nullptr;
             
@@ -143,6 +158,10 @@ class Array {
 
             m_size--;
 
+            if (m_size <= m_capacity / 2) {
+                shrink();
+            }
+
             return elem;
         }
 
@@ -154,6 +173,10 @@ class Array {
             T elem = std::move(m_data[m_size - 1]);
             m_data[m_size - 1].~T();
             m_size--;
+
+            if (m_size <= m_capacity / 2) {
+                shrink();
+            }
 
             return elem;
         }
