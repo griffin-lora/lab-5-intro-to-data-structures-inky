@@ -227,7 +227,7 @@ class LinkedList {
             return m_tail;
         }
 
-        void Clear() {
+        void clear() {
             destroy();
             m_head = nullptr;
             m_tail = nullptr;
