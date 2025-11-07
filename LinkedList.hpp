@@ -7,7 +7,7 @@
 template<typename T>
 class LinkedList {
 	struct Node {
-		T elem;
+		T data;
 		Node* prev = nullptr;
 		Node* next = nullptr;
 	};
@@ -20,7 +20,7 @@ class LinkedList {
 
         for (Node* node = rhs.m_head; node; node = node->next) {
             Node* append = new Node{
-                .elem = T{ node->elem }
+                .elem = T{ node->data }
             };
 
             if (!prev) {
@@ -147,7 +147,7 @@ class LinkedList {
                 throw std::runtime_error("Cannot dequeue an empty queue");
             }
 
-            T elem = std::move(m_head->elem);
+            T elem = std::move(m_head->data);
 
             Node* head = m_head->next;
             delete m_head;
@@ -167,7 +167,7 @@ class LinkedList {
                 throw std::runtime_error("Cannot dequeue an empty queue");
             }
 
-            T elem = std::move(m_tail->elem);
+            T elem = std::move(m_tail->data);
 
             Node* tail = m_tail->prev;
             delete m_tail;
@@ -188,7 +188,7 @@ class LinkedList {
                 throw std::runtime_error("Cannot peek an empty queue");
             }
             
-            return m_head->elem;
+            return m_head->data;
         }
 
         [[nodiscard]] const T& back() const {
@@ -196,22 +196,22 @@ class LinkedList {
                 throw std::runtime_error("Cannot peek an empty stack");
             }
             
-            return m_tail->elem;
+            return m_tail->data;
         }
 
-        T* getHead() {
+        Node* getHead() {
             return m_head;
         }
 
-        const T* getHead() const {
+        const Node* getHead() const {
             return m_head;
         }
 
-        T* getTail() {
+        Node* getTail() {
             return m_tail;
         }
 
-        const T* getTail() const {
+        const Node* getTail() const {
             return m_tail;
         }
 
