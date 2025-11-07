@@ -1,28 +1,26 @@
 #pragma once
-
-#include "Interfaces.hpp"
 #include "LinkedList.hpp"
-#include <stdlib.h>
-#include <stdexcept>
 
-template <typename T>
-class LLQ : public QueueInterface<T> {
-private:
-    LinkedList<T> list;
-public:
-    // Constructor
-    LLQ();
+template<typename T>
+class LLQ {
+    LinkedList<T> ll;
 
-    // Insertion
-    void enqueue(const T& item) override;
+    public:
+        LLQ() = default;
 
-    // Deletion
-    T dequeue() override;
+        [[nodiscard]] size_t getSize() const noexcept {
+            return ll.getSize();
+        }
 
-    // Access
-    T peek() const override;
+        void enqueue(const T& elem) {
+            ll.pushBack(elem);
+        }
 
-    // Getter
-    std::size_t getSize() const noexcept override;
+        [[nodiscard]] const T& peek() const {
+            return ll.front();
+        }
 
+        T dequeue() {
+            return ll.popFront();
+        }
 };

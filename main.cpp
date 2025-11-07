@@ -3,6 +3,7 @@
 #include "ABDQ.hpp"
 #include "ABS.hpp"
 #include "ABQ.hpp"
+#include "LLDQ.hpp"
 #include <iostream>
 #include <string>
 
@@ -15,15 +16,15 @@
 */
 
 int main() {
-    ABDQ<std::string> my_deque;
+    LLDQ<std::string> my_deque;
     my_deque.pushFront("Hellooooooooooooooooo");
     my_deque.pushFront("Woooooooooooooooooooorld");
     my_deque.pushFront("This is a testing message no sso");
 
-    ABDQ<std::string> s3 = my_deque;
+    LLDQ<std::string> s3 = my_deque;
     my_deque = s3;
 
-    ABDQ<std::string> s2 = std::move(my_deque);
+    LLDQ<std::string> s2 = std::move(my_deque);
     my_deque = std::move(s2);
     
     size_t n = my_deque.getSize();

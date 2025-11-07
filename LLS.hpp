@@ -1,27 +1,26 @@
 #pragma once
-
-#include "Interfaces.hpp"
 #include "LinkedList.hpp"
-#include <stdlib.h>
-#include <stdexcept>
 
-template <typename T>
-class LLS : public StackInterface<T> {
-private:
-    LinkedList<T> list;
-public:
-    // Constructor
-    LLS();
+template<typename T>
+class LLS {
+    LinkedList<T> ll;
 
-    // Insertion
-    void push(const T& item) override;
+    public:
+        LLS() = default;
 
-    // Deletion
-    T pop() override;
+        [[nodiscard]] size_t getSize() const noexcept {
+            return ll.getSize();
+        }
 
-    // Access
-    T peek() const override;
+        void push(const T& elem) {
+            ll.pushBack(elem);
+        }
 
-    //Getters
-    std::size_t getSize() const noexcept override;
+        [[nodiscard]] const T& peek() const {
+            return ll.back();
+        }
+
+        T pop() {
+            return ll.popBack();
+        }
 };
