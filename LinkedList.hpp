@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <iostream>
 #include <new>
 #include <stdexcept>
 
@@ -97,6 +98,10 @@ class LinkedList {
             return n;
         }
 
+        [[nodiscard]] unsigned int getCount() const noexcept {
+            return static_cast<unsigned int>(getSize());
+        }
+
         void pushFront(const T& elem) {
             Node* node = new Node{
                 .elem = elem
@@ -113,6 +118,10 @@ class LinkedList {
             m_head = node;
         }
 
+        void AddHead(const T& elem) {
+            pushFront(elem);
+        }
+
         void pushBack(const T& elem) {
             Node* node = new Node{
                 .elem = elem
@@ -127,6 +136,10 @@ class LinkedList {
             m_tail->next = node;
             node->prev = m_tail;
             m_tail = node;
+        }
+
+        void AddTail(const T& elem) {
+            pushBack(elem);
         }
 
         T popFront() {
@@ -184,5 +197,39 @@ class LinkedList {
             }
             
             return m_tail->elem;
+        }
+
+        T* getHead() {
+            return m_head;
+        }
+
+        const T* getHead() const {
+            return m_head;
+        }
+
+        T* getTail() {
+            return m_tail;
+        }
+
+        const T* getTail() const {
+            return m_tail;
+        }
+
+        void Clear() {
+            destroy();
+            m_head = nullptr;
+            m_tail = nullptr;
+        }
+
+        void PrintForward() {
+            for (Node* node = m_head; node; node = node->next) {
+                std::cout << node << '\n';
+            }
+        }
+
+        void PrintReverse() {
+            for (Node* node = m_tail; node; node = node->prev) {
+                std::cout << node << '\n';
+            }
         }
 };
