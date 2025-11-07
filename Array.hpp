@@ -149,7 +149,7 @@ class Array {
 
             m_size--;
 
-            if (m_size <= m_capacity / 2) {
+            if (m_size < m_capacity / 2) {
                 shrink();
             }
 
@@ -165,7 +165,7 @@ class Array {
             m_data[m_size - 1].~T();
             m_size--;
 
-            if (m_size <= m_capacity / 2) {
+            if (m_size < m_capacity / 2) {
                 shrink();
             }
 
